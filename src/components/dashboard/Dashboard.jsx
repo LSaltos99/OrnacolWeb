@@ -190,7 +190,7 @@ class Dashboard extends React.Component {
                                             </div>
                                             <h2>
                                                 {lectura
-                                                    ? `${lectura.temperatura} °C`
+                                                    ? `${Number(lectura.temperatura).toFixed(2)} °C`
                                                     : '-'}
                                             </h2>
                                         </div>
@@ -216,7 +216,7 @@ class Dashboard extends React.Component {
                                             </div>
                                             <h2>
                                                 {lectura
-                                                    ? `${lectura.humedad} %`
+                                                    ? `${Number(lectura.humedad).toFixed(2)} %`
                                                     : '-'}
                                             </h2>
                                         </div>
@@ -242,7 +242,7 @@ class Dashboard extends React.Component {
                                             </div>
                                             <h2>
                                                 {lectura
-                                                    ? `${lectura.caudal} Q`
+                                                    ? `${Number(lectura.caudal).toFixed(2)} Q`
                                                     : '-'}
                                             </h2>
                                         </div>
