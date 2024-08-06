@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, Row, Col, Table, Button, Modal, Form, Input, Spin } from 'antd';
+import { Card, Row, Col, Table, Button, Modal, Form, Input, Spin, Layout } from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
 import { supabaseAnon } from '../../supabaseConfig';
+import SiderCustom from '../SiderCustom';  // Asegúrate de importar SiderCustom
 
 const { Item: FormItem } = Form;
+const { Content } = Layout;
 
 const Nodos = () => {
     const [visibleCreateModal, setVisibleCreateModal] = useState(false);
@@ -113,74 +115,81 @@ const Nodos = () => {
     ];
 
     return (
-        <div className="gutter-example">
-            <BreadcrumbCustom first="Control de Nodos" />
-            <Row gutter={16}>
-                <Col className="gutter-row" span={24}>
-                    <div className="gutter-box">
-                        <Card bordered={false}>
-                            <Button type="primary" onClick={handleCreate}>Crear Nodo</Button>
-                            {loading ? (
-                                <Spin tip="Cargando datos...">
-                                    <Table dataSource={nodes} columns={columns} />
-                                </Spin>
-                            ) : (
-                                <Table dataSource={nodes} columns={columns} rowKey="id" />
+        <Layout style={{ height: '100vh' }}>
+            <SiderCustom />
+            <Layout style={{ marginLeft: 30 }}>
+                <Content style={{ padding: '24px', minHeight: 280 }}> 
+                    <div className="gutter-example">
+                        <BreadcrumbCustom first="Control de Nodos" />
+                        <Row gutter={16}>
+                            <Col className="gutter-row" span={24}>
+                                <div className="gutter-box">
+                                    <Card bordered={false}>
+                                        <Button type="primary" onClick={handleCreate}>Crear Nodo</Button>
+                                        {loading ? (
+                                            <Spin tip="Cargando datos...">
+                                                <Table dataSource={nodes} columns={columns} />
+                                            </Spin>
+                                        ) : (
+                                            <Table dataSource={nodes} columns={columns} rowKey="id" />
+                                        )}
+                                    </Card>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Modal
+                            title="Modificar Nodo"
+                            visible={visibleModifyModal}
+                            onCancel={handleCloseModifyModal}
+                            footer={[
+                                <Button key="cancel" onClick={handleCloseModifyModal}>Cancelar</Button>,
+                                <Button key="save" type="primary" onClick={handleConfirmSaveChanges}>Guardar</Button>,
+                            ]}
+                        >
+                            {selectedNode && (
+                                <Form ref={formRef} initialValues={{ mac: selectedNode.mac, nombre: selectedNode.nombre, latitud: selectedNode.latitud, longitud: selectedNode.longitud }}>
+                                    <FormItem label="MAC" name="mac">
+                                        <Input />
+                                    </FormItem>
+                                    <FormItem label="Nombre" name="nombre">
+                                        <Input />
+                                    </FormItem>
+                                    <FormItem label="Latitud" name="latitud">
+                                        <Input />
+                                    </FormItem>
+                                    <FormItem label="Longitud" name="longitud">
+                                        <Input />
+                                    </FormItem>
+                                </Form>
                             )}
-                        </Card>
+                        </Modal>
+                        <Modal
+                            title="Crear Nodo"
+                            visible={visibleCreateModal}
+                            onCancel={handleCloseCreateModal}
+                            okText="Guardar"
+                            cancelText="Cancelar"
+                            onOk={handleCreateNode}
+                        >
+                            <Form ref={formCreateRef}>
+                                <FormItem label="MAC" name="mac">
+                                    <Input />
+                                </FormItem>
+                                <FormItem label="Nombre" name="nombre">
+                                    <Input />
+                                </FormItem>
+                                <FormItem label="Latitud" name="latitud">
+                                    <Input />
+                                </FormItem>
+                                <FormItem label="Longitud" name="longitud">
+                                    <Input />
+                                </FormItem>
+                            </Form>
+                        </Modal>
                     </div>
-                </Col>
-            </Row>
-            <Modal
-                title="Modificar Nodo"
-                visible={visibleModifyModal}
-                onCancel={handleCloseModifyModal}
-                footer={[
-                    <Button key="cancel" onClick={handleCloseModifyModal}>Cancelar</Button>,
-                    <Button key="save" type="primary" onClick={handleConfirmSaveChanges}>Guardar</Button>,
-                ]}
-            >
-                {selectedNode && (
-                    <Form ref={formRef} initialValues={{ mac: selectedNode.mac, nombre: selectedNode.nombre, latitud: selectedNode.latitud, longitud: selectedNode.longitud }}>
-                        <FormItem label="MAC" name="mac">
-                            <Input />
-                        </FormItem>
-                        <FormItem label="Nombre" name="nombre">
-                            <Input />
-                        </FormItem>
-                        <FormItem label="Latitud" name="latitud">
-                            <Input />
-                        </FormItem>
-                        <FormItem label="Longitud" name="longitud">
-                            <Input />
-                        </FormItem>
-                    </Form>
-                )}
-            </Modal>
-            <Modal
-                title="Crear Nodo"
-                visible={visibleCreateModal}
-                onCancel={handleCloseCreateModal}
-                okText="Guardar"
-                cancelText="Cancelar"
-                onOk={handleCreateNode}
-            >
-                <Form ref={formCreateRef}>
-                    <FormItem label="MAC" name="mac">
-                        <Input />
-                    </FormItem>
-                    <FormItem label="Nombre" name="nombre">
-                        <Input />
-                    </FormItem>
-                    <FormItem label="Latitud" name="latitud">
-                        <Input />
-                    </FormItem>
-                    <FormItem label="Longitud" name="longitud">
-                        <Input />
-                    </FormItem>
-                </Form>
-            </Modal>
-        </div>
+                </Content>
+            </Layout>
+        </Layout>
     );
 };
 

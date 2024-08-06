@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { observer } from 'mobx-react';
-import { Card, Row, Col, DatePicker, Select, Button, Table, Spin } from 'antd';
+import { Card, Row, Col, DatePicker, Select, Button, Table, Spin, Layout } from 'antd';
 import BreadcrumbCustom from '../BreadcrumbCustom';
 import { supabaseAnon } from '../../supabaseConfig';
+import SiderCustom from '../SiderCustom';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+const { Content } = Layout;
 
 const Reportes = () => {
     const [loading, setLoading] = useState(false);
@@ -48,7 +50,6 @@ const Reportes = () => {
 
         try {
             setLoading(true);
-            // Convertir las fechas al formato ISO 8601
             const startDateISO = startDate.toISOString();
             const endDateISO = endDate.toISOString();
 
@@ -77,56 +78,63 @@ const Reportes = () => {
     ];
 
     return (
-        <div className="gutter-example">
-            <BreadcrumbCustom first="Reportes" />
-            <Row gutter={16}>
-                <Col className="gutter-row" span={24}>
-                    <div className="gutter-box">
-                        <Card bordered={false}>
-                            <Row gutter={16} style={{ marginBottom: '16px' }}>
-                                <Col span={6}>
-                                    <Select
-                                        placeholder="Seleccionar nodo"
-                                        style={{ width: '100%' }}
-                                        onChange={handleNodeChange}
-                                        value={selectedNode}
-                                    >
-                                        {nodes.map((node) => (
-                                            <Option key={node.id} value={node.id}>
-                                                {node.nombre}
-                                            </Option>
-                                        ))}
-                                    </Select>
-                                </Col>
-                                <Col span={6}>
-                                    <RangePicker
-                                        style={{ width: '100%' }}
-                                        onChange={handleDateChange}
-                                        value={[startDate, endDate]}
-                                        placeholder={['Fecha inicial', 'Fecha final']}
-                                        locale={{ lang: { placeholder: 'Seleccionar fecha' }, calendar: { lang: { locale: 'es_ES' } } }}
-                                    />
-                                </Col>
-                                <Col span={6}>
-                                    <Button type="primary" onClick={fetchData} disabled={loading}>
-                                        {loading ? 'Cargando...' : 'Obtener Historial'}
-                                    </Button>
-                                </Col>
-                            </Row>
-                            <Table
-                                dataSource={historialData}
-                                columns={columns}
-                                loading={loading}
-                                bordered
-                                scroll={{ x: true }}
-                                rowKey="id"
-                                locale={{ emptyText: 'No hay datos disponibles' }}
-                            />
-                        </Card>
+        <Layout style={{ height: '100vh' }}>
+            <SiderCustom />
+            <Layout style={{ marginLeft: 30 }}>
+                <Content style={{ padding: '24px', minHeight: 280 }}>
+                    <div className="gutter-example">
+                        <BreadcrumbCustom first="Reportes" />
+                        <Row gutter={16}>
+                            <Col className="gutter-row" span={24}>
+                                <div className="gutter-box">
+                                    <Card bordered={false}>
+                                        <Row gutter={16} style={{ marginBottom: '16px' }}>
+                                            <Col span={6}>
+                                                <Select
+                                                    placeholder="Seleccionar nodo"
+                                                    style={{ width: '100%' }}
+                                                    onChange={handleNodeChange}
+                                                    value={selectedNode}
+                                                >
+                                                    {nodes.map((node) => (
+                                                        <Option key={node.id} value={node.id}>
+                                                            {node.nombre}
+                                                        </Option>
+                                                    ))}
+                                                </Select>
+                                            </Col>
+                                            <Col span={6}>
+                                                <RangePicker
+                                                    style={{ width: '100%' }}
+                                                    onChange={handleDateChange}
+                                                    value={[startDate, endDate]}
+                                                    placeholder={['Fecha inicial', 'Fecha final']}
+                                                    locale={{ lang: { placeholder: 'Seleccionar fecha' }, calendar: { lang: { locale: 'es_ES' } } }}
+                                                />
+                                            </Col>
+                                            <Col span={6}>
+                                                <Button type="primary" onClick={fetchData} disabled={loading}>
+                                                    {loading ? 'Cargando...' : 'Obtener Historial'}
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                        <Table
+                                            dataSource={historialData}
+                                            columns={columns}
+                                            loading={loading}
+                                            bordered
+                                            scroll={{ x: true }}
+                                            rowKey="id"
+                                            locale={{ emptyText: 'No hay datos disponibles' }}
+                                        />
+                                    </Card>
+                                </div>
+                            </Col>
+                        </Row>
                     </div>
-                </Col>
-            </Row>
-        </div>
+                </Content>
+            </Layout>
+        </Layout>
     );
 };
 
